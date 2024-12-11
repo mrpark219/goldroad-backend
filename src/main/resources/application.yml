@@ -1,0 +1,30 @@
+logging:
+  config: classpath:logback/logback-spring.xml
+  level:
+    org:
+      springframework:
+        boot:
+          autoconfigure: ERROR
+
+jwt:
+  access-header: access-token
+  refresh-header: refresh-token
+  secret: UGFya1N1bmdId2FuLXRpbC1kaWFyeS1zcHJpbmdib290UGFya1N1bmdId2FuLXRpbC1kaWFyeS1zcHJpbmdib290UGFya1N1bmdId2FuLXRpbC1kaWFyeS1zcHJpbmdib290Cg==
+  access-token-validity-in-seconds: 600
+  refresh-token-validity-in-seconds: 86400
+
+spring:
+  profiles:
+    default: dev
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: goldroad
+    password: root
+    url: ${SPRING_DATASOURCE_URL}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        #show_sql: true
+        format_sql: true

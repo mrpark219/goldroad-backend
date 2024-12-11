@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="30 seconds">
+    <include resource="logback/defaults.xml"/>
+
+    <springProfile name="dev">
+        <include resource="logback/console-debug-appender.xml"/>
+    </springProfile>
+    <springProfile name="prod">
+        <include resource="logback/console-info-appender.xml"/>
+    </springProfile>
+
+
+    <springProfile name="dev">
+        <root>
+            <appender-ref ref="CONSOLE-DEBUG"/>
+        </root>
+    </springProfile>
+    <springProfile name="prod">
+        <root>
+            <appender-ref ref="CONSOLE-INFO"/>
+        </root>
+    </springProfile>
+</configuration>
