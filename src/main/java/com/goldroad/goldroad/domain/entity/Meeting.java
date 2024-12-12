@@ -26,6 +26,9 @@ public class Meeting extends BaseTimeEntity {
 
 	private String keyword;
 
+	public Meeting() {
+	}
+
 	public Meeting(String title, String summary, String activity, String preferredTime, String keyword) {
 		this.title = title;
 		this.summary = summary;
