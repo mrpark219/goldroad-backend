@@ -52,4 +52,17 @@ public class Member extends BaseTimeEntity {
 		this.preferredPeople = preferredPeople;
 		this.interest = interest;
 	}
+
+	@Override
+	public String toString() {
+		return "Member{" +
+			"id=" + id +
+			", genderType='" + genderType + '\'' +
+			", age='" + age + '\'' +
+			", familyComposition='" + familyComposition + '\'' +
+			", preferredTime='" + preferredTime + '\'' +
+			", preferredPeople='" + preferredPeople + '\'' +
+			", interest='" + interest + '\'' +
+			'}';
+	}
 }

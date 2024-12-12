@@ -1,11 +1,12 @@
 package com.goldroad.goldroad.domain.member;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goldroad.goldroad.domain.MemberAuthority.MemberAuthorityRepository;
 import com.goldroad.goldroad.domain.authority.AuthorityRepository;
-import com.goldroad.goldroad.domain.entity.Authority;
-import com.goldroad.goldroad.domain.entity.Member;
-import com.goldroad.goldroad.domain.entity.MemberAuthority;
+import com.goldroad.goldroad.domain.entity.*;
+import com.goldroad.goldroad.domain.meet.MeetRepository;
+import com.goldroad.goldroad.domain.meet.MemberMeetRepository;
 import com.goldroad.goldroad.domain.member.dto.LoginRequestDto;
 import com.goldroad.goldroad.domain.member.dto.SignUpRequestDto;
 import com.goldroad.goldroad.domain.member.dto.SignUpResponseDto;
@@ -15,6 +16,8 @@ import com.goldroad.goldroad.global.security.RefreshToken;
 import com.goldroad.goldroad.global.security.RefreshTokenRepository;
 import com.goldroad.goldroad.global.security.TokenProvider;
 import com.goldroad.goldroad.global.security.TokenType;
+import com.goldroad.goldroad.global.util.GptResponseDto;
+import com.goldroad.goldroad.global.util.GptUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +27,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.StringTokenizer;
 
 @Service
 public class MemberService {
@@ -36,8 +41,10 @@ public class MemberService {
 	private final MemberAuthorityRepository memberAuthorityRepository;
 	private final TokenProvider tokenProvider;
 	private final AuthenticationManagerBuilder authenticationManagerBuilder;
+	private final MeetRepository meetRepository;
+	private final MemberMeetRepository memberMeetRepository;
 
-	public MemberService(PasswordEncoder passwordEncoder, MemberRepository memberRepository, RefreshTokenRepository refreshTokenRepository, AuthorityRepository authorityRepository, MemberAuthorityRepository memberAuthorityRepository, TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder) {
+	public MemberService(PasswordEncoder passwordEncoder, MemberRepository memberRepository, RefreshTokenRepository refreshTokenRepository, AuthorityRepository authorityRepository, MemberAuthorityRepository memberAuthorityRepository, TokenProvider tokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder, MeetRepository meetRepository, MemberMeetRepository memberMeetRepository) {
 		this.passwordEncoder = passwordEncoder;
 		this.memberRepository = memberRepository;
 		this.refreshTokenRepository = refreshTokenRepository;
@@ -45,10 +52,12 @@ public class MemberService {
 		this.memberAuthorityRepository = memberAuthorityRepository;
 		this.tokenProvider = tokenProvider;
 		this.authenticationManagerBuilder = authenticationManagerBuilder;
+		this.meetRepository = meetRepository;
+		this.memberMeetRepository = memberMeetRepository;
 	}
 
 	@Transactional
-	public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) {
+	public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) throws JsonProcessingException {
 
 		if(memberRepository.findByEmail(signupRequestDto.getEmail()).orElse(null) != null) {
 			throw new ApiException("이미 가입되어 있는 유저입니다.", HttpStatus.CONFLICT);
@@ -73,6 +82,21 @@ public class MemberService {
 
 		Member saveMember = memberRepository.save(member);
 		memberAuthorityRepository.save(memberAuthority);
+
+		String interest = new StringTokenizer(member.getInterest()).nextToken().replace(",", "");
+
+		GptResponseDto match = GptUtil.match(interest);
+
+		Meeting meeting = new Meeting(match.getMeetingPurpose(), match.getExplain(), match.getRecommendedActivities(), member.getPreferredTime(), interest);
+		meetRepository.save(meeting);
+
+		List<Member> byInterestLikeAndPreferredPeople = memberRepository.findByInterestLikeAndPreferredPeople("%" + interest + "%", member.getPreferredPeople());
+
+		byInterestLikeAndPreferredPeople.forEach(member1 -> {
+			MemberMeet memberMeet = new MemberMeet(member1, meeting, false);
+			memberMeetRepository.save(memberMeet);
+
+		});
 
 		return SignUpResponseDto.form(saveMember);
 	}

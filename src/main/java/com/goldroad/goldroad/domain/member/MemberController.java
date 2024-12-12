@@ -1,5 +1,6 @@
 package com.goldroad.goldroad.domain.member;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goldroad.goldroad.domain.member.dto.*;
 import com.goldroad.goldroad.global.Exception.ApiException;
 import com.goldroad.goldroad.global.util.SecurityUtil;
@@ -30,7 +31,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/sign-up")
-	public ResponseEntity<SignUpResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) {
+	public ResponseEntity<SignUpResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) throws JsonProcessingException {
 		return ResponseEntity.ok(memberService.signup(signUpRequestDto));
 	}
 
