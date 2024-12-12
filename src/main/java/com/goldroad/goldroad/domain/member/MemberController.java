@@ -93,6 +93,7 @@ public class MemberController {
 			.feedbackSun(byEmail.get().getFeedbackSun())
 			.feedbackManure(byEmail.get().getFeedbackManure())
 			.attendCount((long) size)
+			.levelCount(byEmail.get().getFeedbackWater() + byEmail.get().getFeedbackSun() + byEmail.get().getFeedbackManure() + (long) size)
 			.build();
 	}
 }

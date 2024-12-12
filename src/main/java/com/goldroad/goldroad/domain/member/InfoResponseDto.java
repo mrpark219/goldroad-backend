@@ -32,4 +32,6 @@ public class InfoResponseDto {
 	private Long feedbackManure;
 
 	private Long attendCount;
+
+	private Long levelCount;
 }
