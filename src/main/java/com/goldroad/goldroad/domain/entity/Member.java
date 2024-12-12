@@ -35,7 +35,14 @@ public class Member extends BaseTimeEntity {
 	private String preferredTime;
 
 	private String preferredPeople;
+
 	private String interest;
+
+	private Long feedbackWater;
+
+	private Long feedbackSun;
+
+	private Long feedbackManure;
 
 
 	@OneToMany(mappedBy = "member")
@@ -51,6 +58,9 @@ public class Member extends BaseTimeEntity {
 		this.preferredTime = preferredTime;
 		this.preferredPeople = preferredPeople;
 		this.interest = interest;
+		this.feedbackWater = 0L;
+		this.feedbackSun = 0L;
+		this.feedbackManure = 0L;
 	}
 
 	@Override

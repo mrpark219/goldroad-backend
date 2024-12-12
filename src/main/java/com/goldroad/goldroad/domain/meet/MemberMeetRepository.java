@@ -14,4 +14,6 @@ public interface MemberMeetRepository extends JpaRepository<MemberMeet, Long> {
 	List<MemberMeet> findByMemberAndMeeting(Member member, Meeting meeting);
 
 	MemberMeet findOneByMemberAndMeeting(Member member, Meeting meeting);
+
+	List<MemberMeet> findByMemberAndAttend(Member member, Boolean attend);
 }

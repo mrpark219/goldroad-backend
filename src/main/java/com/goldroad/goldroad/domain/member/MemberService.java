@@ -18,6 +18,7 @@ import com.goldroad.goldroad.global.security.TokenProvider;
 import com.goldroad.goldroad.global.security.TokenType;
 import com.goldroad.goldroad.global.util.GptResponseDto;
 import com.goldroad.goldroad.global.util.GptUtil;
+import com.goldroad.goldroad.global.util.SecurityUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -136,4 +137,31 @@ public class MemberService {
 		refreshTokenRepository.deleteById(currentMemberEmail);
 		SecurityContextHolder.clearContext();
 	}
+
+	@Transactional
+	public void updateFeedBack(FeedbackRequestDto feedbackRequestDto) {
+		Optional<String> currentMemberEmail = SecurityUtil.getCurrentMemberEmail();
+
+		Optional<Member> member = memberRepository.findByEmail(currentMemberEmail.get());
+
+		int n;
+		if(feedbackRequestDto.getType().equals("+")) {
+			n = 1;
+		}
+		else {
+			n = -1;
+		}
+
+		if(feedbackRequestDto.getFeedBackType().equals("water")) {
+			member.get().setFeedbackWater(member.get().getFeedbackWater() + n);
+		}
+		else if(feedbackRequestDto.getFeedBackType().equals("sun")) {
+			member.get().setFeedbackSun(member.get().getFeedbackSun() + n);
+		}
+		else {
+			member.get().setFeedbackManure(member.get().getFeedbackManure() + n);
+		}
+	}
+
+
 }
