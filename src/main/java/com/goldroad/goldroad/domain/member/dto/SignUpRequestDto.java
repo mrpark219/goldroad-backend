@@ -6,10 +6,10 @@ import lombok.Getter;
 @Getter
 public class SignUpRequestDto {
 
-	@NotNull
-	private String email;
+	private String nickname;
 
-	@NotNull
+	private String email;
+	
 	private String password;
 
 	private String genderType;

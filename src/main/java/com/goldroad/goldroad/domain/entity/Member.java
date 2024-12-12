@@ -20,6 +20,8 @@ public class Member extends BaseTimeEntity {
 	@Column(name = "member_id")
 	private Long id;
 
+	private String nickname;
+
 	private String email;
 
 	private String password;
@@ -39,7 +41,8 @@ public class Member extends BaseTimeEntity {
 	@OneToMany(mappedBy = "member")
 	private Set<MemberAuthority> memberAuthorities = new HashSet<>();
 
-	public Member(String email, String password, String genderType, String age, String familyComposition, String preferredTime, String preferredPeople, String interest) {
+	public Member(String nickname, String email, String password, String genderType, String age, String familyComposition, String preferredTime, String preferredPeople, String interest) {
+		this.nickname = nickname;
 		this.email = email;
 		this.password = password;
 		this.genderType = genderType;

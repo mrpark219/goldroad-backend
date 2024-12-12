@@ -56,7 +56,9 @@ public class MemberService {
 		Authority authority = authorityRepository.findByName("ROLE_USER")
 			.orElseThrow(() -> new RuntimeException("Role Not Found"));
 
-		Member member = new Member(signupRequestDto.getEmail(),
+		Member member = new Member(
+			signupRequestDto.getNickname(),
+			signupRequestDto.getEmail(),
 			passwordEncoder.encode(signupRequestDto.getPassword()),
 			signupRequestDto.getGenderType(),
 			signupRequestDto.getAge(),
