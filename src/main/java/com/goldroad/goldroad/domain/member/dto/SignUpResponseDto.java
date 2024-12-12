@@ -11,14 +11,28 @@ public class SignUpResponseDto {
 
 	private String email;
 
-	private String etc;
+	private String genderType;
 
-	public SignUpResponseDto(String email, String etc) {
+	private String age;
+
+	private String familyComposition;
+
+	private String preferredTime;
+
+	private String preferredPeople;
+	private String interest;
+
+	public SignUpResponseDto(String email, String genderType, String age, String familyComposition, String preferredTime, String preferredPeople, String interest) {
 		this.email = email;
-		this.etc = etc;
+		this.genderType = genderType;
+		this.age = age;
+		this.familyComposition = familyComposition;
+		this.preferredTime = preferredTime;
+		this.preferredPeople = preferredPeople;
+		this.interest = interest;
 	}
 
 	public static SignUpResponseDto form(Member member) {
-		return new SignUpResponseDto(member.getEmail(), member.getEtc());
+		return new SignUpResponseDto(member.getEmail(), member.getGenderType(), member.getAge(), member.getFamilyComposition(), member.getPreferredTime(), member.getPreferredPeople(), member.getInterest());
 	}
 }

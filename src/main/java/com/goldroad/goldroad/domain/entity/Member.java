@@ -1,6 +1,7 @@
 package com.goldroad.goldroad.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,14 +24,29 @@ public class Member extends BaseTimeEntity {
 
 	private String password;
 
-	private String etc;
+	private String genderType;
+
+	private String age;
+
+	private String familyComposition;
+
+	private String preferredTime;
+
+	private String preferredPeople;
+	private String interest;
+
 
 	@OneToMany(mappedBy = "member")
 	private Set<MemberAuthority> memberAuthorities = new HashSet<>();
 
-	public Member(String email, String password, String etc) {
+	public Member(String email, String password, String genderType, String age, String familyComposition, String preferredTime, String preferredPeople, String interest) {
 		this.email = email;
 		this.password = password;
-		this.etc = etc;
+		this.genderType = genderType;
+		this.age = age;
+		this.familyComposition = familyComposition;
+		this.preferredTime = preferredTime;
+		this.preferredPeople = preferredPeople;
+		this.interest = interest;
 	}
 }

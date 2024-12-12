@@ -58,7 +58,12 @@ public class MemberService {
 
 		Member member = new Member(signupRequestDto.getEmail(),
 			passwordEncoder.encode(signupRequestDto.getPassword()),
-			signupRequestDto.getEtc());
+			signupRequestDto.getGenderType(),
+			signupRequestDto.getAge(),
+			signupRequestDto.getFamilyComposition(),
+			signupRequestDto.getPreferredTime(),
+			signupRequestDto.getPreferredPeople(),
+			signupRequestDto.getInterest());
 
 		MemberAuthority memberAuthority = new MemberAuthority();
 		memberAuthority.changeMember(member);

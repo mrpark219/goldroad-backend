@@ -12,6 +12,15 @@ public class SignUpRequestDto {
 	@NotNull
 	private String password;
 
-	@NotNull
-	private String etc;
+	private String genderType;
+
+	private String age;
+
+	private String familyComposition;
+
+	private String preferredTime;
+
+	private String preferredPeople;
+
+	private String interest;
 }
