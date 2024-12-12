@@ -2,40 +2,44 @@ package com.goldroad.goldroad.domain.member.dto;
 
 
 import com.goldroad.goldroad.domain.entity.Member;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@Builder
 public class SignUpResponseDto {
 
-	private String nickname;
+	private String accessToken;
 
-	private String email;
+	private String refreshToken;
 
-	private String genderType;
+	private String url;
 
-	private String age;
+	private String gptKey;
 
-	private String familyComposition;
+	private String interest;
+
+	private String model;
+
+	private String temperature;
+
+	private String prompt;
 
 	private String preferredTime;
 
-	private String preferredPeople;
-	private String interest;
-
-	public SignUpResponseDto(String nickname, String email, String genderType, String age, String familyComposition, String preferredTime, String preferredPeople, String interest) {
-		this.nickname = nickname;
-		this.email = email;
-		this.genderType = genderType;
-		this.age = age;
-		this.familyComposition = familyComposition;
-		this.preferredTime = preferredTime;
-		this.preferredPeople = preferredPeople;
-		this.interest = interest;
+	public SignUpResponseDto() {
 	}
 
-	public static SignUpResponseDto form(Member member) {
-		return new SignUpResponseDto(member.getNickname(), member.getEmail(), member.getGenderType(), member.getAge(), member.getFamilyComposition(), member.getPreferredTime(), member.getPreferredPeople(), member.getInterest());
+	public SignUpResponseDto(String accessToken, String refreshToken, String url, String gptKey, String interest, String model, String temperature, String prompt, String preferredTime) {
+		this.accessToken = accessToken;
+		this.refreshToken = refreshToken;
+		this.url = url;
+		this.gptKey = gptKey;
+		this.interest = interest;
+		this.model = model;
+		this.temperature = temperature;
+		this.prompt = prompt;
+		this.preferredTime = preferredTime;
 	}
 }

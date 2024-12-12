@@ -58,7 +58,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public TokenDto signup(SignUpRequestDto signupRequestDto) throws JsonProcessingException {
+	public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) throws JsonProcessingException {
 
 		if(memberRepository.findByEmail(signupRequestDto.getEmail()).orElse(null) != null) {
 			throw new ApiException("이미 가입되어 있는 유저입니다.", HttpStatus.CONFLICT);
@@ -86,19 +86,6 @@ public class MemberService {
 
 		String interest = new StringTokenizer(member.getInterest()).nextToken().replace(",", "");
 
-		GptResponseDto match = GptUtil.match(interest);
-
-		Meeting meeting = new Meeting(match.getMeetingPurpose(), match.getExplain(), match.getRecommendedActivities(), member.getPreferredTime(), interest);
-		meetRepository.save(meeting);
-
-		List<Member> byInterestLikeAndPreferredPeople = memberRepository.findByInterestLikeAndPreferredPeople("%" + interest + "%", member.getPreferredPeople());
-
-		byInterestLikeAndPreferredPeople.forEach(member1 -> {
-			MemberMeet memberMeet = new MemberMeet(member1, meeting, false);
-			memberMeetRepository.save(memberMeet);
-
-		});
-
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signupRequestDto.getEmail(), signupRequestDto.getPassword());
 
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -116,9 +103,24 @@ public class MemberService {
 			refreshTokenRepository.save(newRefreshToken);
 		}
 
-		return TokenDto.builder()
+		return SignUpResponseDto.builder()
 			.accessToken(accessToken)
 			.refreshToken(refreshToken)
+			.url("https://api.openai.com/v1/chat/completions")
+			.gptKey("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")
+			.model("gpt-4o-mini")
+			.temperature("0.7F")
+			.prompt("Please extract information as a JSON object. Please use English for the json key value. Please use Korean for the json value. 은퇴 후 제주도로 이주를 고민하는 사람들을 위한 모임을 생성하려고 합니다. 이 사람들의 공통 관심사는 다음과 같습니다.\n" +
+				"주제: " + interest + "\n" +
+				"위 주제를 바탕으로 다음 형식으로 제주 이주에 도움이 될 수 있는 모임을 제안해주세요. 모임은 화상 통화에서 이루어집니다. 모임을 주도하는 사람은 없으니 교육, 세미나 등의 내용은 제외하고 자유롭게 소통 가능한 주제로 만들어주세요. 주제에 대한 제목과 주제에 대한 설명을 해주세요. 아직 제주도에 정착하지 않은 이주 희망자들을 위한 모임임에 유의하세요. 추천활동에는 제3자의 개입이 없는 활동들로 5개만 추천해주세요. 마지막 활동으로는 서로 응원하고 격려하는 등 긍정적인 마무리가 좋습니다. 글은 순수 텍스트만 넣어주세요.\n" +
+				"Do not include any explanations, only provide a RFC8259 compliant JSON response  following this format without deviation.\n" +
+				"{\n" +
+				"  \"meetingPurpose\": \"meetingPurpose title phrase\",\n" +
+				"  \"explain\": \"explain about meeting purpose phrase\",\n" +
+				"  \"recommendedActivities\": \"recommended activities text\"\n" +
+				"}\n")
+			.preferredTime(signupRequestDto.getPreferredTime())
+			.interest(interest)
 			.build();
 	}
 
