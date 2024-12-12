@@ -58,7 +58,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) throws JsonProcessingException {
+	public TokenDto signup(SignUpRequestDto signupRequestDto) throws JsonProcessingException {
 
 		if(memberRepository.findByEmail(signupRequestDto.getEmail()).orElse(null) != null) {
 			throw new ApiException("이미 가입되어 있는 유저입니다.", HttpStatus.CONFLICT);
@@ -99,7 +99,27 @@ public class MemberService {
 
 		});
 
-		return SignUpResponseDto.form(saveMember);
+		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(signupRequestDto.getEmail(), signupRequestDto.getPassword());
+
+		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+		String accessToken = tokenProvider.createToken(authentication, TokenType.ACCESS);
+		String refreshToken = tokenProvider.createToken(authentication, TokenType.REFRESH);
+
+		//refresh 토큰 관련 처리
+		Optional<RefreshToken> savedRefreshToken = refreshTokenRepository.findById(signupRequestDto.getEmail());
+		if(savedRefreshToken.isPresent()) {
+			refreshTokenRepository.save(savedRefreshToken.get().updateToken(refreshToken));
+		}
+		else {
+			RefreshToken newRefreshToken = new RefreshToken(signupRequestDto.getEmail(), refreshToken);
+			refreshTokenRepository.save(newRefreshToken);
+		}
+
+		return TokenDto.builder()
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.build();
 	}
 
 	@Transactional

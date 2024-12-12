@@ -38,7 +38,7 @@ public class MemberController {
 	}
 
 	@PostMapping("/sign-up")
-	public ResponseEntity<SignUpResponseDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) throws JsonProcessingException {
+	public ResponseEntity<TokenDto> signUp(@Valid @RequestBody SignUpRequestDto signUpRequestDto) throws JsonProcessingException {
 		return ResponseEntity.ok(memberService.signup(signUpRequestDto));
 	}
 
