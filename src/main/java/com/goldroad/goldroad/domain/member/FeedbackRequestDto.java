@@ -8,4 +8,6 @@ public class FeedbackRequestDto {
 	private String feedBackType;
 
 	private String type;
+
+	private Long memberId;
 }

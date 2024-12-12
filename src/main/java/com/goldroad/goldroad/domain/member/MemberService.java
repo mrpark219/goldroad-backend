@@ -140,9 +140,7 @@ public class MemberService {
 
 	@Transactional
 	public void updateFeedBack(FeedbackRequestDto feedbackRequestDto) {
-		Optional<String> currentMemberEmail = SecurityUtil.getCurrentMemberEmail();
-
-		Optional<Member> member = memberRepository.findByEmail(currentMemberEmail.get());
+		Optional<Member> member = memberRepository.findById(feedbackRequestDto.getMemberId());
 
 		int n;
 		if(feedbackRequestDto.getType().equals("+")) {

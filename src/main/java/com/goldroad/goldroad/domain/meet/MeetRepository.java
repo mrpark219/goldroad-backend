@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface MeetRepository extends JpaRepository<Meeting, Long> {
 	Optional<Meeting> findByIdAndCreatedDateAfter(Long id, LocalDateTime createdDateAfter);
 
-	Optional<Meeting> findByIdAndCreatedDateBefore(Long id, LocalDateTime createdDateBefore);
+	Meeting findByIdAndCreatedDateBefore(Long id, LocalDateTime createdDateBefore);
 
 	List<Meeting> findAllByOrderByCreatedDateDesc();
 }

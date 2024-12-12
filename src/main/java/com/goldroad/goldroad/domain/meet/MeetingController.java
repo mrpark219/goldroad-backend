@@ -5,6 +5,7 @@ import com.goldroad.goldroad.domain.entity.Member;
 import com.goldroad.goldroad.domain.entity.MemberMeet;
 import com.goldroad.goldroad.domain.member.MemberRepository;
 import com.goldroad.goldroad.global.util.SecurityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Security;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@Slf4j
 @RequestMapping("/api/meeting")
 public class MeetingController {
 
@@ -43,8 +45,9 @@ public class MeetingController {
 
 		List<Meeting> meetings = new ArrayList<>();
 		for(MemberMeet mm : byMember) {
-			Optional<Meeting> meeting = meetRepository.findByIdAndCreatedDateAfter((mm.getMeeting().getId()), LocalDateTime.now().minusDays(1L));
-			meetings.add(meeting.get());
+			Meeting meeting = meetRepository.findByIdAndCreatedDateAfter((mm.getMeeting().getId()), LocalDateTime.now().minusDays(1L)).get();
+			Meeting meeting1 = new Meeting(meeting.getTitle(), meeting.getSummary(), meeting.getActivity(), meeting.getPreferredTime(), meeting.getKeyword());
+			meetings.add(meeting1);
 		}
 
 		return meetings;
@@ -59,8 +62,9 @@ public class MeetingController {
 
 		List<Meeting> meetings = new ArrayList<>();
 		for(MemberMeet mm : byMember) {
-			Optional<Meeting> meeting = meetRepository.findByIdAndCreatedDateBefore((mm.getMeeting().getId()), LocalDateTime.now());
-			meetings.add(meeting.get());
+			Meeting meeting = meetRepository.findByIdAndCreatedDateBefore((mm.getMeeting().getId()), LocalDateTime.now());
+			Meeting meeting1 = new Meeting(meeting.getTitle(), meeting.getSummary(), meeting.getActivity(), meeting.getPreferredTime(), meeting.getKeyword());
+			meetings.add(meeting1);
 		}
 
 		return meetings;
