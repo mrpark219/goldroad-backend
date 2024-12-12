@@ -5,9 +5,7 @@ import com.goldroad.goldroad.domain.entity.Member;
 import com.goldroad.goldroad.domain.entity.MemberMeet;
 import com.goldroad.goldroad.domain.member.MemberRepository;
 import com.goldroad.goldroad.global.util.SecurityUtil;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Security;
 import java.time.LocalDateTime;
@@ -22,11 +20,13 @@ public class MeetingController {
 	private final MeetRepository meetRepository;
 	private final MemberRepository memberRepository;
 	private final MemberMeetRepository memberMeetRepository;
+	private final MeetingService meetingService;
 
-	public MeetingController(MeetRepository meetRepository, MemberRepository memberRepository, MemberMeetRepository memberMeetRepository) {
+	public MeetingController(MeetRepository meetRepository, MemberRepository memberRepository, MemberMeetRepository memberMeetRepository, MeetingService meetingService) {
 		this.meetRepository = meetRepository;
 		this.memberRepository = memberRepository;
 		this.memberMeetRepository = memberMeetRepository;
+		this.meetingService = meetingService;
 	}
 
 	@GetMapping("")
@@ -64,5 +64,11 @@ public class MeetingController {
 		}
 
 		return meetings;
+	}
+
+	@PostMapping("/join")
+	public void join(@RequestBody JoinRequestDto joinRequestDto) {
+
+		meetingService.update(joinRequestDto.getMeetingId());
 	}
 }

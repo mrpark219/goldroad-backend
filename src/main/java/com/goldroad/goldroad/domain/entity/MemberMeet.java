@@ -26,6 +26,9 @@ public class MemberMeet {
 
 	private Boolean attend;
 
+	public MemberMeet() {
+	}
+
 	public MemberMeet(Member member, Meeting meeting, Boolean attend) {
 		this.member = member;
 		this.meeting = meeting;
