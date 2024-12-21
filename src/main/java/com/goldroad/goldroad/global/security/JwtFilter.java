@@ -70,11 +70,11 @@ public class JwtFilter extends OncePerRequestFilter {
 		return tokenType == TokenType.ACCESS ? request.getHeader(ACCESS_TOKEN_HEADER) : request.getHeader(REFRESH_TOKEN_HEADER);
 	}
 
-	public void jwtExceptionHandler(HttpServletResponse response, String msg, HttpStatus status) {
+	public void jwtExceptionHandler(HttpServletResponse response, String message, HttpStatus status) {
 		response.setStatus(status.value());
 		response.setContentType("application/json");
 		try {
-			String json = new ObjectMapper().writeValueAsString(new GlobalResponseDto(msg, status.value()));
+			String json = new ObjectMapper().writeValueAsString(new GlobalResponseDto(message, status.value()));
 			response.getWriter().write(json);
 		}
 		catch(Exception e) {
