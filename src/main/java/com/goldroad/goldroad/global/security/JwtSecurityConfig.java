@@ -14,16 +14,19 @@ public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurity
 
 	private final String REFRESH_TOKEN_HEADER;
 
-	public JwtSecurityConfig(TokenProvider tokenProvider, String accessTokenHeader, String refreshTokenHeader) {
+	private final String[] PERMITTED_PATHS;
+
+	public JwtSecurityConfig(TokenProvider tokenProvider, String accessTokenHeader, String refreshTokenHeader, String[] permittedPaths) {
 		this.tokenProvider = tokenProvider;
 		ACCESS_TOKEN_HEADER = accessTokenHeader;
 		REFRESH_TOKEN_HEADER = refreshTokenHeader;
+		PERMITTED_PATHS = permittedPaths;
 	}
 
 	//Security 로직에 필터 등록
 	@Override
 	public void configure(HttpSecurity http) {
-		JwtFilter customFilter = new JwtFilter(tokenProvider, ACCESS_TOKEN_HEADER, REFRESH_TOKEN_HEADER);
+		JwtFilter customFilter = new JwtFilter(tokenProvider, ACCESS_TOKEN_HEADER, REFRESH_TOKEN_HEADER, PERMITTED_PATHS);
 		http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 }

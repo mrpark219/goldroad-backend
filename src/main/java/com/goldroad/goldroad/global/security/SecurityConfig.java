@@ -27,9 +27,21 @@ public class SecurityConfig {
 
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-	public final String ACCESS_TOKEN_HEADER;
+	private final String ACCESS_TOKEN_HEADER;
 
-	public final String REFRESH_TOKEN_HEADER;
+	private final String REFRESH_TOKEN_HEADER;
+
+	private final String[] PERMITTED_PATHS = {
+		"/api/member/sign-up",
+		"/api/member/login",
+		"/api/test",
+		"/swagger-ui/**",
+		"/api-docs",
+		"/swagger-ui-custom.html",
+		"/v3/api-docs/**",
+		"/api-docs/**",
+		"/swagger-ui.html"
+	};
 
 	public SecurityConfig(TokenProvider tokenProvider, CorsFilter corsFilter, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler, @Value("${jwt.access-header}") String accessTokenHeader, @Value("${jwt.refresh-header}") String refreshTokenHeader) {
 		this.tokenProvider = tokenProvider;
@@ -58,8 +70,7 @@ public class SecurityConfig {
 			)
 
 			.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-				.requestMatchers("/api/member/sign-up", "/api/member/login", "/api/test", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
-					"/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll()
+				.requestMatchers(PERMITTED_PATHS).permitAll()
 				.requestMatchers("/error").permitAll()
 				.anyRequest().authenticated()
 			)
@@ -68,7 +79,7 @@ public class SecurityConfig {
 				sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			)
 
-			.with(new JwtSecurityConfig(tokenProvider, ACCESS_TOKEN_HEADER, REFRESH_TOKEN_HEADER), customizer -> {
+			.with(new JwtSecurityConfig(tokenProvider, ACCESS_TOKEN_HEADER, REFRESH_TOKEN_HEADER, PERMITTED_PATHS), customizer -> {
 			});
 
 		return http.build();

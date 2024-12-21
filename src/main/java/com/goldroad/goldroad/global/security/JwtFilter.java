@@ -26,10 +26,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	public final String REFRESH_TOKEN_HEADER;
 
-	public JwtFilter(TokenProvider tokenProvider, String accessTokenHeader, String refreshTokenHeader) {
+	private final String[] PERMITTED_PATHS;
+
+	public JwtFilter(TokenProvider tokenProvider, String accessTokenHeader, String refreshTokenHeader, String[] permittedPaths) {
 		this.tokenProvider = tokenProvider;
 		this.ACCESS_TOKEN_HEADER = accessTokenHeader;
 		this.REFRESH_TOKEN_HEADER = refreshTokenHeader;
+		PERMITTED_PATHS = permittedPaths;
 	}
 
 	//토큰의 인증정보를 Security Context에 저장하는 역할 수행
@@ -90,5 +93,21 @@ public class JwtFilter extends OncePerRequestFilter {
 		catch(Exception e) {
 			log.error(e.getMessage());
 		}
+	}
+
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+
+		String requestURI = request.getRequestURI();
+		boolean result = false;
+
+		for(String permittedPath : PERMITTED_PATHS) {
+			if(requestURI.startsWith(permittedPath)) {
+				result = true;
+				break;
+			}
+ 		}
+
+		return result;
 	}
 }
