@@ -13,6 +13,10 @@ jwt:
   access-token-validity-in-seconds: 600
   refresh-token-validity-in-seconds: 86400
 
+open-ai:
+  url: https://api.openai.com/v1/chat/completions
+  api-key: ${OPEN_AI_API_KEY}
+
 spring:
   profiles:
     default: dev
