@@ -24,7 +24,9 @@ public class MemberJpaRepository {
 		return Optional.ofNullable(queryFactory
 			.selectFrom(member)
 			.leftJoin(member.memberAuthorities, memberAuthority)
+				.fetchJoin()
 			.leftJoin(memberAuthority.authority, authority)
+				.fetchJoin()
 			.where(member.email.eq(email))
 			.fetchOne()
 		);
