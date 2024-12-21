@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -67,7 +68,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
 	//Request Header에서 토큰 정보를 꺼내옴
 	private String resolveToken(HttpServletRequest request, TokenType tokenType) {
-		return tokenType == TokenType.ACCESS ? request.getHeader(ACCESS_TOKEN_HEADER) : request.getHeader(REFRESH_TOKEN_HEADER);
+
+		String bearerToken = tokenType == TokenType.ACCESS ? request.getHeader(ACCESS_TOKEN_HEADER) : request.getHeader(REFRESH_TOKEN_HEADER);
+
+		if(StringUtils.hasText(bearerToken)) {
+			if(bearerToken.startsWith("Bearer ")) {
+				return bearerToken.substring(7);
+			}
+			return bearerToken;
+		}
+		return null;
 	}
 
 	public void jwtExceptionHandler(HttpServletResponse response, String message, HttpStatus status) {
