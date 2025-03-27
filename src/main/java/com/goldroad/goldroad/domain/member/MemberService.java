@@ -4,6 +4,7 @@ package com.goldroad.goldroad.domain.member;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.goldroad.goldroad.domain.MemberAuthority.MemberAuthorityRepository;
 import com.goldroad.goldroad.domain.authority.AuthorityRepository;
+import com.goldroad.goldroad.domain.authority.BasicAuthorityType;
 import com.goldroad.goldroad.domain.entity.Authority;
 import com.goldroad.goldroad.domain.entity.Member;
 import com.goldroad.goldroad.domain.entity.MemberAuthority;
@@ -57,10 +58,10 @@ public class MemberService {
 	@Transactional
 	public SignUpResponseDto signup(SignUpRequestDto signupRequestDto) throws JsonProcessingException {
 
-		if(memberRepository.findByEmail(signupRequestDto.getEmail()).orElse(null) != null) {
+		if(memberRepository.findByEmail(signupRequestDto.getEmail()).isPresent()) {
 			throw new ApiException("이미 가입되어 있는 유저입니다.", HttpStatus.CONFLICT);
 		}
-		Authority authority = authorityRepository.findByName("ROLE_USER")
+		Authority authority = authorityRepository.findByName(BasicAuthorityType.ROLE_USER.name())
 			.orElseThrow(() -> new RuntimeException("Role Not Found"));
 
 		Member member = new Member(
