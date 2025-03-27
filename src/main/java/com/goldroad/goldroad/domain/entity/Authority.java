@@ -15,4 +15,12 @@ public class Authority extends BaseTimeEntity {
 	private String name;
 
 	private String description;
+
+	public Authority() {
+	}
+
+	public Authority(String name, String description) {
+		this.name = name;
+		this.description = description;
+	}
 }
